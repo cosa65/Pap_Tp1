@@ -1,0 +1,28 @@
+0 1 [2 3 4 5]
+
+precalcular matriz: en la fila i tenemos las matrices multiplicadas de a 2^i, en la columna j tenemos la inicial
+candidata = Id
+for i = 0..n-L
+	for j = i..i+l
+		sé el máx largo que tengo disponible empezando en j*
+		agarro el max largo que puedo sin pasarme de L
+		multiplico la matriz "candidata" por la que agarré
+		i += largo
+	comparo la que obtuve con el resultado y GGG
+
+
+0: inf  (n)
+1: 1
+2: 2
+3: 1
+4: 3 (la cantidad de veces que puedo dividir por 2)
+(eso es la cantidad de ceros que tengo a la derecha del numero, capaz lo pudo hacer en O de 1
+
+
+ponele que tengo una de 12, no puedo tener mas de 4 cachos
+
+123[4)(5678)(9012)(34)(5]6780
+[12345678)(9012)
+(como mínimo la cantidad de 1s en el número)
+al avanzar 1 pincho el primero: sumo log(n/2) + 1
+después siempre voy a sumar menos
