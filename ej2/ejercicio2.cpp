@@ -1,22 +1,15 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <iostream>
-#include <stdlib.h>
 #include <algorithm> //max
+#include <fstream>
+
 
 using namespace std;
 
-
-//int M [4][4] = {{0,-2,-1,-4},{-2,0,5,1},{-1,5,0,3},{-4,1,3,0}};
-//int M [3][3] = {{0, -1, 1},{-1,0,-1},{1,-1,0}};
-//int M[4][4] = {{0,2,-1,0},{2,0,0,-1},{-1,0,0,2},{0,-1,2,0}};
-int M [4][4] = {{0,2,2,-1},{2,0,0,2},{2,0,0,2},{-1,2,2,0}};
-
-
 ///////////////////
 
-int sumarpresentes(int presentes, int yo, int N)//sumo lo que cuesta agregar el nuevo elemento "yo" al conjunto "presentes"
+int sumarpresentes(int presentes, int yo, int N, int **M)//sumo lo que cuesta agregar el nuevo elemento "yo" al conjunto "presentes"
 {
 	int res = 0;
 	for(int j = 0; j < N; j++)
@@ -28,23 +21,24 @@ int sumarpresentes(int presentes, int yo, int N)//sumo lo que cuesta agregar el 
 }
 
 
-void init(vector<int> &resultados)
+void init(int *resultados, int N )
 {
 	resultados[0] = 0;
 	resultados[1] = 0;
-	for (int i = 2; i < resultados.size(); ++i)
+	for (int i = 2; i < (1<<N); ++i)
 	{
 		resultados[i] = -100;
 	}
-	for (int i = 2; i < resultados.size(); i*=2)
+	for (int i = 2; i < (1<<N); i*=2)
 	{
 		resultados[i] = 0;
 	}
 }
 
-void calcular(vector<int> &resultados, int N)
+
+void calcular(int *resultados, int N, int **M)
 {
-	for (int i = 0; i < resultados.size() ; ++i)//me guardo la suma de tener cada elemento en el conjunto complejidad O(2^n)*(n^2) <= O(3^n)
+	for (int i = 0; i < (1<<N) ; ++i)//me guardo la suma de tener cada elemento en el conjunto complejidad O(2^n)*(n^2) <= O(3^n)
 	{
 		if(resultados[i] == -100)
 		{
@@ -52,7 +46,7 @@ void calcular(vector<int> &resultados, int N)
 			{
 				if(i & (1<<j)) //voy a sacar el bit menos significativo que es el que se agrego ahora
 				{
-					resultados[i] = resultados[(i)^(1<<j)] + sumarpresentes(i^(1<<j), j, N);
+					resultados[i] = resultados[(i)^(1<<j)] + sumarpresentes(i^(1<<j), j, N, M);
 					break;
 				}
 			}
@@ -62,10 +56,11 @@ void calcular(vector<int> &resultados, int N)
 
 }
 
-int mejor( vector<int> &resultados, int N, int mask)
+int mejor( int *resultados, int N, int mask)
 {
 	int res = 0;
-	for (int i = 1; i < (1<<N); ++i)
+//	for (int i = 1; i < (1<<N); ++i)
+	for(int i=mask; i != 0; i = mask&(i-1)) //lo que supuestamente baja a O(3^N)
 	{	
 		if ((mask & i)  == i) //tengo que ser una opcion para estar en la fiesta  //hmm complejidad O(4^n)???
 		{ 
@@ -77,17 +72,44 @@ int mejor( vector<int> &resultados, int N, int mask)
 }
 
 ////////////////////////////////
-int main()
+int main(int argc, char *argv[])//SOLO PASAR COMO ENTRADA EL NOMBRE DEL ARCHIVO EN EL FORMATO PEDIDO POR EL TP
 {
+	int N, elem;
 
-	int N = 4;
+	if(argc != 2){
+		cout << "falta la entrada" << endl;
+		return 0; 
+	}
+		
+	ifstream archivo (argv[1]);
 
-	vector<int> resultados(1<<N);
+    archivo >> N;
 
-	init(resultados);
-	calcular(resultados, N);
+    int **M = new int *[N];
+	for(int i = 0; i < N; i++)  {M[i] = new int[N];}
+		
+
+	for (int i = 0; i < N; ++i)
+	{
+		for (int j = 0; j < N; ++j)
+		{
+			archivo >> elem;
+			M[i][j] = elem;
+		}
+	}
+
+	archivo.close();
+
+ 	int *resultados = new int [1<<N];
+
+	init(resultados, N);
+	calcular(resultados, N, M);
 
 	int a = mejor(resultados, N, (1 << N)-1);
+
+	for(int i = 0; i < N; i++) {free (M[i]);} //LIBERO MEMORIA
+	free (M);
+	free (resultados);
 	
 	cout << "RESULTADO FINAL " << a << endl;
 	
