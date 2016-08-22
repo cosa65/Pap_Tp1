@@ -59,15 +59,8 @@ void calcular(int *resultados, int N, int **M)
 int mejor( int *resultados, int N, int mask)
 {
 	int res = 0;
-//	for (int i = 1; i < (1<<N); ++i)
-	for(int i=mask; i != 0; i = mask&(i-1)) //lo que supuestamente baja a O(3^N)
-	{	
-		if ((mask & i)  == i) //tengo que ser una opcion para estar en la fiesta  //hmm complejidad O(4^n)???
-		{ 
-			res =  max(res,  resultados[i] + mejor(resultados, N, mask^i));
-		}
-		
-	}
+	for(int i=mask; i != 0; i = mask&(i-1)) //lo que baja a O(3^N), itero sobre el subconjunto que me permitiria (mask & i == i)
+		res =  max(res,  resultados[i] + mejor(resultados, N, mask^i));
 	return res;
 }
 
