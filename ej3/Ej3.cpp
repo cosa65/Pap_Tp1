@@ -6,8 +6,8 @@ int main(){
 	int n;
 	cin >> n;
 	int a;
-	int suma = 0;
-	int max = 0;
+	long long suma = 0;
+	long long max = 0;
 	for(int i=0; i<n; i++){
 		cin >> a;
 		suma += a;
