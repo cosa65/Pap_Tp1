@@ -65,18 +65,11 @@ int mejor( int *resultados, int N, int mask)
 }
 
 ////////////////////////////////
-int main(int argc, char *argv[])//SOLO PASAR COMO ENTRADA EL NOMBRE DEL ARCHIVO EN EL FORMATO PEDIDO POR EL TP
+int main()
 {
 	int N, elem;
 
-	if(argc != 2){
-		cout << "falta la entrada" << endl;
-		return 0; 
-	}
-		
-	ifstream archivo (argv[1]);
-
-    archivo >> N;
+    cin >> N;
 
     int **M = new int *[N];
 	for(int i = 0; i < N; i++)  {M[i] = new int[N];}
@@ -86,12 +79,10 @@ int main(int argc, char *argv[])//SOLO PASAR COMO ENTRADA EL NOMBRE DEL ARCHIVO 
 	{
 		for (int j = 0; j < N; ++j)
 		{
-			archivo >> elem;
+			cin >> elem;
 			M[i][j] = elem;
 		}
 	}
-
-	archivo.close();
 
  	int *resultados = new int [1<<N];
 
@@ -104,7 +95,7 @@ int main(int argc, char *argv[])//SOLO PASAR COMO ENTRADA EL NOMBRE DEL ARCHIVO 
 	free (M);
 	free (resultados);
 	
-	cout << "RESULTADO FINAL " << a << endl;
+	cout << a << endl;
 	
 	return 0;
 }
