@@ -1,8 +1,9 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 
 void add_possible_subsets(int P, std::vector<int>& xs, int x) {
-
+//todos los posibles resultados de agregar los elementos de xs a x
 	int n = xs.size();
 
 	if (x <= P) {
@@ -17,37 +18,48 @@ void add_possible_subsets(int P, std::vector<int>& xs, int x) {
 	}
 }
 
-std::vector<int> combine(int P, std::vector<int> X, std::vector<int> Y) {
+int binSearch(int P, int subX, std::vector<int>& subsY, int start, int pivot, int end) {
+	if (pivot == start) {
+		if (subX + subsY[start] <= P)
+			return subX + subsY[start];
+		else
+			return 0;
+	} 
+	if (subX + subsY[pivot] > P)
+		return binSearch(P, subX, subsY, start, (start + pivot)/2, pivot);
+	else
+		return binSearch(P, subX, subsY, pivot, (end + pivot)/2, end);
 
-	vector<int> subsX, subsY;
-	int n = X.size();
-	int m = Y.size();
-	for (int i = 0; i < n; i++) {
-		add_possible_subsets(P, subsX, X[i]);
-	}
+}
 
-	for (int i = 0; i < m; i++) {
-		add_possible_subsets(P, subsY, Y[i]);
-	}
+int combine(int P, std::vector<int>& subsX, std::vector<int>& subsY) {
 
+	std::sort(subsY.begin(), subsY.end());
 	int size_subs_x = subsX.size();
+	int size_subs_y = subsY.size();
+	int best = 0;
 
-	for (int i = 0; i < size_subs_x; i++) {
-		add_possible_subsets(P, subsY, subsX[i]);
+	for (int i = 0; i < size_subs_x && subsX[i] <= P; i++) {
+		int cand = binSearch(P, subsX[i], subsY, 0, size_subs_y/2, size_subs_y);
+		if (cand > best) cand = best;
 	}
+	return best;
 }
 
 std::vector<int> find_possibles(int P, std::vector<int> D, int start, int end) {
 
-	std::vector<int> X = find_possibles(P, D, start, end/2);
-	std::vector<int> Y = find_possibles(P, D, end/2, end);
-	std::vector<int> res = combine(P, X, Y);
+	std::vector<int> res;
+	int n = D.size();
+	for (int i = 0; i < n; i++) {
+		add_possible_subsets(P, res, D[i]); //para cada elemento de X, agrego todo lo que puedo sumar
+	}
+
 	return res;
 }
 
 int main() {
 	
-	int P, N;
+	/*int P, N;
 	std::cin >> P >> N;
 
 	std::vector<int> D(N);
@@ -56,6 +68,16 @@ int main() {
 		std::cin >> D[i];
 	}
 
-	int res = best_option(P, D, 0, N);
+	std::vector<int> X = find_possibles(P, D, 0, N/2);
+	std::vector<int> Y = find_possibles(P, D, N/2, N);
+	int res = combine(P, X, Y);
+
+	std::cout << res << std::endl;*/
+
+	int x = 10;
+	int myints[] = {2,3,4,9};
+  	std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
+	int n = fifth.size();
+	return binSearch(18, 10, fifth, 0, n/2, n);
 
 }
