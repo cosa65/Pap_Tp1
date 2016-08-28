@@ -18,8 +18,6 @@ std::vector<int> heapsort(std::vector<int>& vec) {
 
 std::vector<int> sin_repetidos(std::vector<int>& Y) {
 
-	if (Y.size() == 0) return Y;
-
 	std::vector<int> res(Y.size());
 	int n = Y.size();
 	int j = 0;
@@ -35,7 +33,6 @@ std::vector<int> sin_repetidos(std::vector<int>& Y) {
 }
 
 int binary_search(std::vector<int>& Y, int xi, int P) {
-	if (Y.size() == 0) return 0;
 
 	int first = 0;
 	int last = Y.size();
@@ -93,8 +90,7 @@ void add_possible_subsets(int P, std::vector<int>& xs, int x) {
 
 	int n = xs.size();
 
-	if (x <= P) {
-		xs.push_back(x);	
+	if (x <= P) {	
 		int act;
 		for (int i = 0; i < n; i++) {
 			act = x + xs[i];
@@ -108,6 +104,7 @@ void add_possible_subsets(int P, std::vector<int>& xs, int x) {
 std::vector<int> get_subsets(int P, std::vector<int>& D, int start, int end) {
 
 	std::vector<int> res;
+	res.push_back(0);
 	for (int i = start; i < end; i++) {
 		add_possible_subsets(P, res, D[i]);
 	}
