@@ -33,30 +33,14 @@ std::vector<int> sin_repetidos(std::vector<int>& Y) {
 }
 
 int binary_search(std::vector<int>& Y, int xi, int P) {
+	if (Y.size() == 0) return 0;
 
-	int first = 0;
-	int last = Y.size();
-	int mid = last/2;
-	int res = 0;
-	int act;
+	int best_pos = upper_bound(Y.begin(), Y.end(), P - xi) - 1 - Y.begin();
+		//Upper bound me devuelve en log(n) un iterador al primer elemento de y que es mayor a P - xi
+		//El anterior es el último que me sirve; si no existe, no hay ninguno que me sirva.
+	if (best_pos == -1) return 0;
 
-	do {
-		mid = (first + last) / 2;
-		act = xi + Y[mid];
-		
-		if (P > act) {
-			if (mid != last-1 && P < Y[mid+1] + xi) return act;
-			res = act;
-			first = mid;
-		} else if (P < act) {
-			last = mid;
-		} else if (P == act) {
-			return P;
-		}
-	}
-	while(last - first > 1);
-
-	return res;
+	return xi + Y[best_pos];
 }
 
 int search_best(std::vector<int>& X, std::vector<int>& Y, int P) {
