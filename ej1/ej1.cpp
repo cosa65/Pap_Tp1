@@ -16,22 +16,6 @@ std::vector<int> heapsort(std::vector<int>& vec) {
 	return res;
 }
 
-std::vector<int> sin_repetidos(std::vector<int>& Y) {
-
-	std::vector<int> res(Y.size());
-	int n = Y.size();
-	int j = 0;
-	res[0] = Y[0];
-
-	for (int i = 1; i < n; i++) {
-		if (Y[i] != res[j]) {
-			j++;
-			res[j] = Y[i];
-		}
-	}
-	return res;
-}
-
 int binary_search(std::vector<int>& Y, int xi, int P) {
 	if (Y.size() == 0) return 0;
 
@@ -64,7 +48,6 @@ int combine(int P, std::vector<int>& X, std::vector<int>& Y) {
 	int n = X.size();
 	int m = Y.size();
 
-	Y = sin_repetidos(Y);
 	Y = heapsort(Y);
 
 	return search_best(X, Y, P);
@@ -96,8 +79,8 @@ std::vector<int> get_subsets(int P, std::vector<int>& D, int start, int end) {
 	return res;
 }
 
-int meet_in_the_middle(int P, std::vector<int>& D) {
-
+int meet_in_the_middle(int P, std::vector<int>& D) {	//Algoritmo principal, separa las operaciones internas en obtener los subsets de los dos subarrays
+														//Luego combine ordena y hace la busqueda binaria
 	int end = D.size();
 	std::vector<int> X = get_subsets(P, D, 0, D.size()/2);
 	std::vector<int> Y = get_subsets(P, D, end/2, end);
