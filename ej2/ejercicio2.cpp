@@ -21,32 +21,32 @@ int sumarpresentes(int presentes, int yo, int N, int **M)//sumo lo que cuesta ag
 }
 
 
-void init(int *resultados, int N )
+void init(int *FelicidadFiesta, int N )
 {
-	resultados[0] = 0;
-	resultados[1] = 0;
+	FelicidadFiesta[0] = 0;
+	FelicidadFiesta[1] = 0;
 	for (int i = 2; i < (1<<N); ++i)
 	{
-		resultados[i] = -100;
+		FelicidadFiesta[i] = -100;
 	}
 	for (int i = 2; i < (1<<N); i*=2)
 	{
-		resultados[i] = 0;
+		FelicidadFiesta[i] = 0;
 	}
 }
 
 
-void calcular(int *resultados, int N, int **M)
+void CalcularFelicidades(int *FelicidadFiesta, int N, int **M)
 {
-	for (int i = 0; i < (1<<N) ; ++i)//me guardo la suma de tener cada elemento en el conjunto complejidad O(2^n)*(n^2) <= O(3^n)
+	for (int i = 3; i < (1<<N) ; ++i)//me guardo la suma de tener cada elemento en el conjunto complejidad O(2^n)*(n^2) <= O(3^n)
 	{
-		if(resultados[i] == -100)
+		if(FelicidadFiesta[i] == -100)
 		{
 			for (int j = 0; j < N; ++j)
 			{
 				if(i & (1<<j)) //voy a sacar el bit menos significativo que es el que se agrego ahora
 				{
-					resultados[i] = resultados[(i)^(1<<j)] + sumarpresentes(i^(1<<j), j, N, M);
+					FelicidadFiesta[i] = FelicidadFiesta[(i)^(1<<j)] + sumarpresentes(i^(1<<j), j, N, M);
 					break;
 				}
 			}
@@ -56,11 +56,16 @@ void calcular(int *resultados, int N, int **M)
 
 }
 
-int mejor( int *resultados, int N, int mask)
+int MejorCombinacion(int *ResPrevios, int *FelicidadFiesta, int N, int mask)
 {
 	int res = 0;
+	if (ResPrevios[mask] != -100)
+		return ResPrevios[mask];
+
 	for(int i=mask; i != 0; i = mask&(i-1)) //lo que baja a O(3^N), itero sobre el subconjunto que me permitiria (mask & i == i)
-		res =  max(res,  resultados[i] + mejor(resultados, N, mask^i));
+		res =  max(res,  FelicidadFiesta[i] + MejorCombinacion(ResPrevios, FelicidadFiesta, N, mask^i));
+	
+	ResPrevios[mask] = res;
 	return res;
 }
 
@@ -84,16 +89,22 @@ int main()
 		}
 	}
 
- 	int *resultados = new int [1<<N];
+ 	int *FelicidadFiesta = new int [1<<N];
+ 	int *ResPrevios = new int [1<<N];
 
-	init(resultados, N);
-	calcular(resultados, N, M);
+ 	for (int i = 0; i < (1<<N); ++i)
+ 		ResPrevios[i] = -100;
 
-	int a = mejor(resultados, N, (1 << N)-1);
+	init(FelicidadFiesta, N);
+	CalcularFelicidades(FelicidadFiesta, N, M);
+
+	int a = MejorCombinacion(ResPrevios, FelicidadFiesta, N, (1 << N)-1);
 
 	for(int i = 0; i < N; i++) {free (M[i]);} //LIBERO MEMORIA
 	free (M);
-	free (resultados);
+	free (FelicidadFiesta);
+	free (ResPrevios);
+
 	
 	cout << a << endl;
 	
